@@ -1,6 +1,6 @@
 #!/bin/bash
 echo ""
-echo "LineageOS 21 Unified Buildbot"
+echo "ProjectEverest Unified Buildbot"
 echo "Executing in 5 seconds - CTRL-C to exit"
 echo ""
 sleep 5
@@ -57,7 +57,7 @@ BUILD_DATE="$(date -u +%Y%m%d)"
 prep_build() {
     echo "Preparing local manifests"
     mkdir -p .repo/local_manifests
-    cp ./lineage_build_unified/local_manifests_${MODE}/*.xml .repo/local_manifests
+    cp ./everest_build_unified/local_manifests_${MODE}/*.xml .repo/local_manifests
     echo ""
 
     echo "Syncing repos"
@@ -78,7 +78,7 @@ prep_build() {
 
 apply_patches() {
     echo "Applying patch group ${1}"
-    bash ./lineage_build_unified/apply_patches.sh ./lineage_patches_unified/${1}
+    bash ./everest_build_unified/apply_patches.sh ./everest_patches_unified/${1}
 }
 
 prep_device() {
@@ -97,7 +97,7 @@ finalize_device() {
 finalize_treble() {
     cd device/phh/treble
     git clean -fdx
-    bash generate.sh lineage
+    bash generate.sh everest
     cd ../../..
     cd treble_app
     bash build.sh release
@@ -111,17 +111,12 @@ finalize_treble() {
 
 build_device() {
     brunch ${1}
-    mv $OUT/lineage-*.zip ~/build-output/lineage-21.0-$BUILD_DATE-UNOFFICIAL-${1}$($PERSONAL && echo "-personal" || echo "").zip
+    mv $OUT/ProjectEverest-*.zip ~/build-output/ProjectEverest-$BUILD_DATE-UNOFFICIAL-${1}$($PERSONAL && echo "-personal" || echo "").zip
 }
 
 build_treble() {
     case "${1}" in
-        ("A64VN") TARGET=a64_bvN;;
-        ("A64VS") TARGET=a64_bvS;;
-        ("A64GN") TARGET=a64_bgN;;
         ("64VN") TARGET=arm64_bvN;;
-        ("64VS") TARGET=arm64_bvS;;
-        ("64GN") TARGET=arm64_bgN;;
         (*) echo "Invalid target - exiting"; exit 1;;
     esac
     lunch lineage_${TARGET}-${aosp_target_release}-userdebug
@@ -136,7 +131,7 @@ build_treble() {
         SIGNED=true
         echo ""
     fi
-    mv $OUT/system.img ~/build-output/lineage-21.0-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "")$(${SIGNED} && echo "-signed" || echo "").img
+    mv $OUT/system.img ~/build-output/ProjectEverest-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "")$(${SIGNED} && echo "-signed" || echo "").img
     #make vndk-test-sepolicy
 }
 
